@@ -1,0 +1,18 @@
+{% extends "layout.html" %} {% block content %}
+<a href="/quote">Lisää itsellesi allekirjoitus</a>
+<br /><br />
+Hei, {{session.username}}!
+<br />
+{% if user_quote %} Sinun allekirjoituksesi on "{{user_quote[0][0]}}". {%elif
+session.quote%} Sinun allekirjoituksesi on "{{session.quote}}". {%else%} Sinulla
+ei ole allekirjoitusta. {%endif%}
+
+<br />
+Keskusteluja olet aloittanut yhteensä {{user_post_count[0][0]}} kappaletta!
+<br />
+Postaustesi pituus on keskimäärin ollut {{text_avg[0]}} merkkiä.
+
+<br />
+<a href="/">Palaa takaisin</a>
+
+{% include "layout_trees.html" %} {% endblock %}
