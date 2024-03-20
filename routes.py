@@ -78,7 +78,7 @@ def new_post():
         content = request.form["content"]
         user_id=request.form["user_id"]
         topic_id=request.form["topic"]
-        users.check_csrf()
+        #users.check_csrf()
 
         if len(title)==0 or len(content)==0 or title.isspace() or content.isspace():
             return render_template("error.html", message="Julkaisun ja sen otsikon täytyy sisältää tekstiä.")
@@ -122,7 +122,7 @@ def edit_topics():
 @app.route("/delete_topic", methods= {"get", "post"})
 def delete_topic():
     topic_id = request.form["topic_id"]
-    users.check_csrf()
+    #users.check_csrf()
     try:
         topics.delete_topic(topic_id)
         return redirect("/edit_topics")
@@ -133,7 +133,7 @@ def delete_topic():
 @app.route("/create_topic", methods= {"get", "post"})
 def create_topic():
     topic_name= request.form["topic"]
-    users.check_csrf()
+    #users.check_csrf()
     try:
         topics.create_topic(topic_name)
         return redirect("/edit_topics")
@@ -148,7 +148,7 @@ def new_quote():
     if request.method == "POST":
         content = request.form["content"]
         user_id=request.form["user_id"]
-        users.check_csrf()
+        #users.check_csrf()
         if content.isspace():
             return render_template("error.html", message="Allekirjoitus ei saa olla tyhjä.")
         if not users.set_quote(user_id, content):
@@ -159,7 +159,7 @@ def new_quote():
 @app.route("/delete_post",methods=["get", "post"])
 def delete_post():
     message_id = request.form["post_id"]
-    users.check_csrf()
+    #users.check_csrf()
     try:
         posts.delete_post(message_id)
     except:
@@ -171,7 +171,7 @@ def delete_post():
 def delete_comment():
     comment_id = request.form["comment_id"]
     post_id = request.form["post_id"]
-    users.check_csrf()
+    #users.check_csrf()
     try:
         comments.delete_comment(comment_id)
     except:
@@ -185,7 +185,7 @@ def new_comment():
         content = request.form["content"]
         user_id=request.form["user_id"]
         post_id=request.form["post_id"]
-        users.check_csrf()
+        #users.check_csrf()
         if not len(content)>0 or content.isspace():
             return render_template("error.html", message="Kommentti ei saa olla tyhjä. Yritä uudelleen syötteellä.")
         if not comments.create_comment(content, True, user_id, post_id):

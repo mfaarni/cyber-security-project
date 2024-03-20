@@ -18,7 +18,7 @@ def login(username, password):
         session['id']=user[0]
         session['username'] = username
         session["role"]=user[2]
-        session["csrf_token"] = secrets.token_hex(16)
+        #session["csrf_token"] = secrets.token_hex(16)
 
         sql = "SELECT content FROM quotes WHERE user_id=:id"
         result = db.session.execute(sql, {"id":user[0]})
@@ -103,6 +103,6 @@ def get_quotes():
     except:
         return False
 
-def check_csrf():
-    if session["csrf_token"] != request.form["csrf_token"]:
-        abort(403)
+#def check_csrf():
+#    if session["csrf_token"] != request.form["csrf_token"]:
+#        abort(403)
