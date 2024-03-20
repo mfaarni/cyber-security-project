@@ -11,7 +11,8 @@ def login(username, password):
     if not user:
         return False
 
-    if not check_password_hash(user[1], password):
+    #if not check_password_hash(user[1], password):
+    if password != user[1]:
         return False
     else:
 
@@ -28,14 +29,16 @@ def login(username, password):
         return True
 
 def register(username, password, role):
-    hash_value=generate_password_hash(password)
+    #Cryptographic failure, possible fix commented in this function
+    #hash_value=generate_password_hash(password)
     sql = "SELECT id, password FROM users WHERE username=:username"
     result = db.session.execute(sql, {"username":username})
     user = result.fetchone()    
     if not user:
-        hash_value = generate_password_hash(password)
+        #hash_value = generate_password_hash(password)
         sql = "INSERT INTO users (username, password, role) VALUES (:username, :password, :role)"
-        db.session.execute(sql, {"username":username, "password":hash_value, "role":role})
+        #db.session.execute(sql, {"username":username, "password":hash_value, "role":role})
+        db.session.execute(sql, {"username":username, "password":password, "role":role})
         db.session.commit()
         return login(username, password)
     else:
@@ -102,7 +105,9 @@ def get_quotes():
         return message
     except:
         return False
+    
 
+# CSRF, possible fix below, implemented throughout code in forms and methods.
 #def check_csrf():
 #    if session["csrf_token"] != request.form["csrf_token"]:
 #        abort(403)

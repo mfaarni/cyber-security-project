@@ -42,14 +42,15 @@ def register():
         password = request.form["password"]
         password2 = request.form["password2"]
         role = request.form["role"]
-        if len(username)<3 or len(username)>14:
-            return render_template("error.html", message="Käyttäjätunnuksen pitää olla 3-14 merkkiä pitkä.")
-        if len(password)<3:
-            return render_template("error.html", message="salasanan pituus tulee olla vähintään 3 merkkiä.")
-        if " " in password:
-            return render_template("error.html", message="Salasana ei saa sisältää välilyöntejä.")
-        if " " in username or " " in password:
-            return render_template("error.html", message="Käyttäjätunnus ei saa sisältää välilyöntejä.")
+        # Identification and Authentication failures, possible fix commented below:
+        #if len(username)<3 or len(username)>14:
+        #    return render_template("error.html", message="Käyttäjätunnuksen pitää olla 3-14 merkkiä pitkä.")
+        #if len(password)<3:
+        #    return render_template("error.html", message="salasanan pituus tulee olla vähintään 3 merkkiä.")
+        #if " " in password:
+        #    return render_template("error.html", message="Salasana ei saa sisältää välilyöntejä.")
+        #if " " in username:
+        #    return render_template("error.html", message="Käyttäjätunnus ei saa sisältää välilyöntejä.")
         if password != password2:
             return render_template("error.html", message="Salasanat eivät täsmää.")
        
