@@ -1,6 +1,8 @@
 from app import app
 import users, posts, comments, topics
 from flask import render_template, request, redirect, session
+import re
+import sys
 
 
 @app.route("/")
@@ -42,23 +44,29 @@ def register():
         password = request.form["password"]
         password2 = request.form["password2"]
         role = request.form["role"]
-        # Identification and Authentication failures, possible fix commented below:
-        #if len(username)<3 or len(username)>14:
-        #    return render_template("error.html", message="Käyttäjätunnuksen pitää olla 3-14 merkkiä pitkä.")
-        #if len(password)<3:
-        #    return render_template("error.html", message="salasanan pituus tulee olla vähintään 3 merkkiä.")
-        #if " " in password:
-        #    return render_template("error.html", message="Salasana ei saa sisältää välilyöntejä.")
-        #if " " in username:
-        #    return render_template("error.html", message="Käyttäjätunnus ei saa sisältää välilyöntejä.")
-        if password != password2:
-            return render_template("error.html", message="Salasanat eivät täsmää.")
+
+    # Identification and Authentication failures
+    # Users should be required to use a strong password, fix below
+    #if len(password) < 8:
+    #    return render_template("error.html", message="Password should be at least 8 characters long.")
+    #if re.search(r'\s', password):
+    #    return render_template("error.html", message="The password should not contain spaces.")
+    #if re.search(r'\s', username):
+    #    return render_template("error.html", message="The username should not contain spaces.")
+    #if not (re.search(r'[a-zA-Z]', password) and re.search(r'\d', password)):
+    #    return render_template("error.html", message="The password should include both letters and numbers.")
+    
+    if not re.match(r'^[a-zA-Z0-9_]{4,14}$', username):
+        return render_template("error.html", message="Username should be 4-14 characters long and only contain letters, numbers, or underscores.")
+    
+    if password != password2:
+        return render_template("error.html", message="Salasanat eivät täsmää.")
        
+    else:
+        if users.register(username, password, role):
+            users.login(username, password)
         else:
-            if users.register(username, password, role):
-                users.login(username, password)
-            else:
-                return render_template("error.html", message="Rekisteröityminen epäonnistui")
+            return render_template("error.html", message="Rekisteröityminen epäonnistui")
 
         return redirect("/")
 
@@ -157,14 +165,34 @@ def new_quote():
 
         return redirect("/")
 
-@app.route("/delete_post",methods=["get", "post"])
-def delete_post():
-    message_id = request.form["post_id"]
-    #users.check_csrf()
+
+    # Broken access control
+@app.route("/delete_post/<int:post_id>",methods=["get", "post"])
+def delete_post(post_id):
+    print(post_id, file=sys.stderr)
     try:
-        posts.delete_post(message_id)
+        posts.delete_post(post_id)
     except:
-        return render_template("error.html", message="Viestin poisto epäonnistui. Yritä uudelleen.")
+     return render_template("error.html", message="Viestin poisto epäonnistui. Yritä uudelleen.")
+        
+
+        # Fix for access control, verify deletion by checking the user is right
+        # and get the info using request.form
+
+
+        #@app.route("/delete_post",methods=["get", "post"])
+        #def delete_post():
+            #users.check_csrf()
+            #post_id = request.form["post_id"]
+            #creator = posts.get_post_creator(post_id)[0]
+            #userid = request.form["user_id"]
+            #if creator != request.form["user_id"]:
+            #    return render_template("error.html", message="Poisto epäonnistui.")
+            #else:
+                #try:
+                #    posts.delete_post(post_id)
+                #except:
+                #    return render_template("error.html", message="Viestin poisto epäonnistui. Yritä uudelleen.")
         
     return redirect("/")
 

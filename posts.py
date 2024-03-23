@@ -60,16 +60,36 @@ def create_post(title, content, visibility, user_id, topic_id):
         return str(sql3.id)
         
         
+def get_post_creator(post_id):
 
 
-def delete_post(post_id):
+        sql= '''SELECT user_id 
+                FROM posts
+                WHERE id = id'''
+        result = db.session.execute(sql, {"id":post_id})
+        creator = result.fetchone()
+        return creator
 
 
-        sql= '''UPDATE posts SET visibility=FALSE 
-                WHERE id=:id'''
-        db.session.execute(sql, {"id":post_id})
+# Injection
+
+def delete_post(id):
+
+
+        sql= f'''DELETE
+                FROM POSTS 
+                WHERE id='{id}' '''
+        db.session.execute(sql)
         db.session.commit()
         return True
+
+        # Fix for injection
+        #sql= '''DELETE
+        #        FROM POSTS 
+        #        WHERE id=:id'''
+        #db.session.execute(sql, {"id":id})
+        #db.session.commit()
+        #return True
 
 
 

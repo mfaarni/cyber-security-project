@@ -49,8 +49,8 @@
           {% endif %} 
         {% endfor %}
         {% if session.role==1 or session.id==post[3]%}
-          <form action="/delete_post" method="POST">
-            <input type="hidden" name=post_id value={{post[0]}}>
+          <form action="/delete_post/{{post[0]}}" method="POST">
+            <input type="hidden" name=user_id value={{post[3]}}>
             <!--<input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
             -->
             <input style="font: size 10px;" type="submit" value="Poista viesti">
